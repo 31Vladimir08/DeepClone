@@ -3,9 +3,9 @@ package models;
 import java.util.List;
 
 public class Man {
-	public String name;
-	public int age;
-	public List<String> favoriteBooks;
+	private String name;
+	private int age;
+	private List<String> favoriteBooks;
 
 	public Man(String name, int age, List<String> favoriteBooks) {
 		this.name = name;
@@ -35,5 +35,6 @@ public class Man {
 
 	public void setFavoriteBooks(List<String> favoriteBooks) {
 		this.favoriteBooks = favoriteBooks;
-	}	
+	}
+	
 }
