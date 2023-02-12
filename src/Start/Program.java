@@ -12,7 +12,11 @@ public class Program {
 			var m = getManTest();
 			var res = CopyUtils.deepCopy(m);
 		   } catch (Exception e) {
-			   System.out.printf("%s, %s", e.getMessage(), e.getStackTrace());
+			   var strBuffer = new StringBuffer();
+			   for (var item : e.getStackTrace()) {
+				   strBuffer.append(item.getFileName());
+			   }
+			   System.out.printf("%s, %s", e.getMessage(), strBuffer.toString());
 		   }		
 	}
 	
