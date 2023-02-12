@@ -1,5 +1,6 @@
 package Services;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,13 +10,17 @@ import Enums.BaseTypes;
 
 public class CopyUtils {
 	public static <T> T deepCopy(T originObject) throws Exception {
-		if (isPrimitive(originObject)) {
+		if (originObject == null || isPrimitive(originObject)) {
 			return originObject;
-		}
-		
+		}		
 		var classType = originObject.getClass();
 		var newObject = createNewObject(classType);
 		if (newObject == null) {
+			if (classType.isArray()) {
+				var newArr = copyArray(originObject);
+				return (T)newArr;
+			}
+			
 			return originObject;
 		}
 
@@ -35,7 +40,7 @@ public class CopyUtils {
 		for (var item : fields) {
 			item.setAccessible(true);
 		    var value = item.get(originObject);
-		    if (isPrimitive(value)) {
+		    if (value == null || isPrimitive(value)) {
 		    	item.set(newObject, value);
 		    }
 		    else {
@@ -44,6 +49,22 @@ public class CopyUtils {
 		    }
 		}
 		return (T)newObject;
+	}
+	
+	private static Object copyArray(Object originObject) throws Exception {
+		var length = Array.getLength(originObject);
+		var newArr = newArray(originObject);
+		for (var i = 0; i < length; i++) {
+			var originElemen = Array.get(originObject, i);
+			if (!isPrimitive(originElemen)) {
+				var res = deepCopy(originElemen);
+				Array.set(newArr, i, res);
+			}
+			else {						
+				Array.set(newArr, i, originElemen);
+			}
+		}
+		return newArr;
 	}
 	
 	private static boolean isPrimitive(Object classType) {
@@ -111,6 +132,8 @@ public class CopyUtils {
         	return BaseTypes.Boolean;
         case "java.lang.String":
         	return BaseTypes.String;
+        case "java.lang.Object[]":
+        	return BaseTypes.Array;
         default:
         	return BaseTypes.Object;
     	}
@@ -170,11 +193,36 @@ public class CopyUtils {
 			if (!isPrimitive(item)) {
 				var res = deepCopy(item);
             	list.add(res);
-                break;
 		    }
 			else {
 				list.add(item);			
 		    }
+		}
+	}
+	
+	private static Object newArray(Object originObject) {
+		var classType = originObject.getClass();
+		int length = Array.getLength(originObject);
+	
+		switch(classType.getTypeName()){            
+        case "int[]":
+        	return Array.newInstance(int.class, length);
+        case "char[]":
+        	return Array.newInstance(char.class, length);
+        case "double[]":
+        	return Array.newInstance(double.class, length);
+        case "long[]":
+        	return Array.newInstance(long.class, length);
+        case "byte[]":
+        	return Array.newInstance(byte.class, length);
+        case "short[]":
+        	return Array.newInstance(short.class, length);
+        case "float[]":
+        	return Array.newInstance(float.class, length);
+        case "boolean[]":
+        	return Array.newInstance(boolean.class, length);
+        default:
+        	return Array.newInstance(Array.get(originObject, 0).getClass(), length);
 		}
 	}
 }

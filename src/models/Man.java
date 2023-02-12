@@ -3,6 +3,7 @@ package models;
 import java.util.List;
 
 public class Man {
+	public Integer[] ob;
 	private String name;
 	private int age;
 	private List<String> favoriteBooks;

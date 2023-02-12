@@ -9,5 +9,6 @@ public enum BaseTypes
 	Number,
 	String,
 	Character,
-	Boolean
+	Boolean,
+	Array
 }

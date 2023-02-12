@@ -28,6 +28,8 @@ public class Program {
 		books.add("Sam");
 		
 		var man = new Man("Vladimir", 36, books);
+		man.ob = new Integer[] { 1, 2 };
+		
 		return man;
 	}	
 }
